@@ -92,7 +92,7 @@ class AllLabsScreen extends StatelessWidget {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Color(0xFF3E69FE),
+                                foregroundColor: Color(0xFF3E69FE),
                               ),
                               child: Text("Book Now"),
                             ),

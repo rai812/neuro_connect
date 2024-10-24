@@ -1,8 +1,60 @@
+import 'package:digi_diagnos/screens/profile.dart';
 import 'package:digi_diagnos/screens/testDetails.dart';
 import 'package:flutter/material.dart';
 import '../model/testModal.dart'; // Replace with the actual import path
 import '../provider/auth_provider.dart';
+import '../model/user_model.dart'; // Replace with the actual import path
+import '../screens/appointment_screen.dart';
+import 'package:provider/provider.dart';
 import 'allLabs.dart'; // Replace with the actual import path
+
+class AllDoctorsScreen extends StatelessWidget {
+  
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('All Doctors'),
+        // Add a back button to the app bar
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: FutureBuilder<List<DoctorInfoModel>>(
+        future: authProvider.getAllDoctors(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text("Error: ${snapshot.error}"),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty ?? true) {
+            return Center(
+              child: Text("No Doctors listed."),
+            );
+          } else {
+
+            return ListView.builder(
+                  itemCount: snapshot.data?.length,
+                  itemBuilder: (context, index) {
+                    return DoctorCard(doctorInfoModel: snapshot.data![index], showControles: true,);
+                  },
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
 
 class AllTestsScreen extends StatelessWidget {
   final AuthProvider testProvider = AuthProvider();
@@ -62,7 +114,7 @@ class AllTestsScreen extends StatelessWidget {
                                             TestDetailsScreen(test: test)));
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Color(0xFF3E69FE),
+                                foregroundColor: Color(0xFF3E69FE),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),

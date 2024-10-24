@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({Key? key});
 
@@ -21,10 +22,6 @@ class EditProfileScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(height: 16),
-            // Profile Picture Editing Section
-            ProfilePictureEdit(),
-
-            SizedBox(height: 16),
             // Edit Profile Form
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -37,32 +34,47 @@ class EditProfileScreen extends StatelessWidget {
   }
 }
 
-class ProfilePictureEdit extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          CircleAvatar(
-              backgroundColor: Colors.grey,
-              radius: 40,
-              child: Icon(Icons.person,size: 40,)),
-          SizedBox(height: 5),
-          TextButton(
-            onPressed: () {
-              // Add logic to open a dialog or navigate to a screen for profile picture selection/editing
-            },
-            style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(Color(0xFF3E69FE)),
-              backgroundColor: MaterialStateProperty.all(Colors.transparent)
-            ),
-            child: Text('Change Profile Picture',style: TextStyle(fontSize: 18),),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// class ProfilePictureEdit extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       child: Column(
+//         children: [
+//           CircleAvatar(
+//               backgroundColor: Colors.grey,
+//               radius: 40,
+//               child: Icon(Icons.person,size: 40,)),
+//           SizedBox(height: 5),
+//           // TextButton(
+//           //     onPressed: () async {
+//           //     // Add logic to open a dialog or navigate to a screen for profile picture selection/editing
+//           //     // For example, you can use the ImagePicker package to select an image from the device's gallery or camera
+//           //     // Here's an example using the image_picker package:
+
+//           //       final picker = ImagePicker();
+//           //       final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+//           //       if (pickedImage != null) {
+//           //         // Handle the selected image
+//           //         // You can save it to a temporary location or upload it to a server
+//           //         // For example, you can use the http package to upload the image to a server
+//           //         // Here's an example using the http package:
+
+//           //         // Import the http package
+//           //       }
+//           //     },
+//           //   },
+//             // style: ButtonStyle(
+//             //   foregroundColor: MaterialStateProperty.all(Color(0xFF3E69FE)),
+//             //   backgroundColor: MaterialStateProperty.all(Colors.transparent)
+//             // ),
+//             // child: Text('Change Profile Picture',style: TextStyle(fontSize: 18),),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class EditProfileForm extends StatefulWidget {
   const EditProfileForm({Key? key}) : super(key: key);

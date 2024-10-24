@@ -27,7 +27,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  "assets/images/doctors.png",
+                  "assets/images/welcomescreen.png",
                   height: 300,
                 ),
                 const SizedBox(height: 20),
@@ -56,12 +56,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     onPressed: () async {
                       if (ap.isSignedIn == true) {
                         await ap.getDataFromSP().whenComplete(
-                              () => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const NavBar(),
-                            ),
-                          ),
+                              () async {
+                                await ap.getDataFromFirestore();
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>  NavBar(role: ap.role),
+                                  ),
+                                );
+                              } 
                         );
                       } else {
                         Navigator.pushReplacement(

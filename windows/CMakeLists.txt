@@ -32,16 +32,30 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
 # Use Unicode for all projects.
 add_definitions(-DUNICODE -D_UNICODE)
 
+# add _CRT_SECURE_NO_WARNINGS to remove warnings about unsafe functions
+# add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+
+# add /clr to enable common language runtime support
+# add_compile_options(/clr)
+
 # Compilation settings that should be applied to most targets.
 #
 # Be cautious about adding new options here, as plugins use this function by
 # default. In most cases, you should add new options to specific targets instead
 # of modifying this function.
 function(APPLY_STANDARD_SETTINGS TARGET)
+  # print the target name
+  message(STATUS "Applying standard settings to target: ${TARGET}")
+  # remove definintion D_CRT_SECURE_NO_WARNINGS for the target firebase_storage_plugin
+  if(${TARGET} STREQUAL "firebase_storage_plugin")
+    target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
+  else()
+    target_compile_definitions(${TARGET} PRIVATE "_CRT_SECURE_NO_WARNINGS")
+  endif()
   target_compile_features(${TARGET} PUBLIC cxx_std_17)
   target_compile_options(${TARGET} PRIVATE /W4 /WX /wd"4100")
   target_compile_options(${TARGET} PRIVATE /EHsc)
-  target_compile_definitions(${TARGET} PRIVATE "_HAS_EXCEPTIONS=0")
+  # target_compile_definitions(${TARGET} PRIVATE "_HAS_EXCEPTIONS=0")
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
 endfunction()
 

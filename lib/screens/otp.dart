@@ -158,7 +158,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         (value) => Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const NavBar(),
+                          builder: (context) =>  NavBar(role: 'admin',),
                         ),
                             (route) => false),
                   ),
@@ -166,11 +166,11 @@ class _OtpScreenState extends State<OtpScreen> {
               );
             } else {
               // new user
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const UserInfromationScreen()),
-                      (route) => false);
+              // Navigator.pushAndRemoveUntil(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => const UserInfromationScreen()),
+              //         (route) => false);
             }
           },
         );

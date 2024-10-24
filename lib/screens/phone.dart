@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../provider/auth_provider.dart';
 import '../widgets/custom_button.dart';
 import 'package:provider/provider.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,6 +15,8 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true;
 
   Country selectedCountry = Country(
     phoneCode: "91",
@@ -55,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 30),
                   const Text(
-                    "Register",
+                    "Login",
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -63,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    "Add your phone number. We'll send you a verification code",
+                    "Add your phone number. We will create an account for you if not already created.",
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.black38,
@@ -145,6 +149,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
 
+                  const Text(
+                    "Password.",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black38,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  // Password field widget here
+                  TextFormField(
+                    cursorColor: Colors.black,
+                    controller: passwordController,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    onFieldSubmitted: (value) {
+                      setState(() {
+                        passwordController.text = value;
+                      });
+                    },
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                         return 'Please enter your password';
+                       }
+                       return null;
+                     },
+                  ),
                   const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
@@ -164,6 +212,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void sendPhoneNumber() {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String phoneNumber = phoneController.text.trim();
-    ap.signInWithPhone(context, "+${selectedCountry.phoneCode}$phoneNumber");
+    String password = passwordController.text.trim();
+    String passwordHash = md5.convert(utf8.encode(password)).toString();
+
+
+    // create the hash of password
+
+
+    ap.signInWithPhoneAndPassword(context, phoneNumber, passwordHash);
   }
 }

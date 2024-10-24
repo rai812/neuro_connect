@@ -5,17 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts package
 import '../provider/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'firebase_options.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: "AIzaSyCQ_OV4WSC3P-o1dOV6NhWjpJ-Wmpsh-Cw",
-      appId: "1:2035463667:android:d24799d7963133c9620e86",
-      messagingSenderId: "2035463667",
-      projectId: "healthtest-35b89",
-      storageBucket: "healthtest-35b89.appspot.com",
-    ),
+    options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
 }
@@ -33,7 +30,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: WelcomeScreen(),
-        title: "Health_Diagnose",
+        navigatorKey: navigatorKey,
+        title: "Neuro_Connect",
         theme: ThemeData(
           primaryColor: Color(0xFF3E69FE), // Set the primary color
           textTheme: GoogleFonts.openSansTextTheme(), // Set the font using Google Fonts

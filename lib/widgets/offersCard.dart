@@ -120,7 +120,7 @@ class OffersCard extends StatelessWidget {
                 onPressed: () {
                   // Add logic for reviewing the booking
                 },
-                style: ElevatedButton.styleFrom(primary: Color(0xFF3E69FE)),
+                style: ElevatedButton.styleFrom(foregroundColor: Color(0xFF3E69FE)),
                 child: Text(
                   'Contact Lab',
                   style: TextStyle(color: Colors.white),
@@ -139,7 +139,7 @@ class OffersCard extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => BookingScreen()),
                   );
                 },
-                style: ElevatedButton.styleFrom(primary: Color(0xFF3E69FE)),
+                style: ElevatedButton.styleFrom(foregroundColor: Color(0xFF3E69FE)),
                 child: Text(
                   'Make Booking',
                   style: TextStyle(color: Colors.white),

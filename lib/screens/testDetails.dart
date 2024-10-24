@@ -139,7 +139,7 @@ class LabtestCard extends StatelessWidget {
                 SizedBox(height: 16),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF3E69FE),
+                    foregroundColor: Color(0xFF3E69FE),
                   ),
                   onPressed: onBookNowPressed,
                   child: Text("Book Now"),
