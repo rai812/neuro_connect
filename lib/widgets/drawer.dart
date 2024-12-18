@@ -1,3 +1,4 @@
+import 'package:digi_diagnos/screens/referrals.dart';
 import 'package:digi_diagnos/screens/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,9 @@ import 'package:digi_diagnos/screens/home.dart';
 import 'package:digi_diagnos/screens/profile.dart';
 import 'package:digi_diagnos/screens/phone.dart';
 import 'package:digi_diagnos/screens/admin_home.dart';
-
+import 'package:digi_diagnos/screens/referrals.dart';
+import 'package:digi_diagnos/screens/admin_load.dart';
+import '../screens/data_upload.py';
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({
     super.key,
@@ -55,6 +58,85 @@ class DrawerWidget extends StatelessWidget {
                   ],
                 ),
               ),
+              ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.home),
+                      SizedBox(width: 8,),
+                      Text('Referrals',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                    ],
+                  ),
+                  onTap: () {
+                    // Add action for menu item 1
+                    Navigator.pop(context); // Close the drawer
+                    // go to home screen
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ReferralList()));
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                  },
+                ),
+                Divider(
+                  thickness: 2,
+                  indent: 40,
+                ),
+              // check if user is admin and testing is set in env
+              if (authProvider.userModel.role == 'admin' && authProvider.testing)
+                ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.home),
+                      SizedBox(width: 8,),
+                      Text('Admin Test Load',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                    ],
+                  ),
+                  onTap: () {
+                    // Add action for menu item 1
+                    Navigator.pop(context); // Close the drawer
+                    // go to home screen
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdminLoadScreen()));
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                  },
+                ),
+              if (authProvider.userModel.role == 'admin' && authProvider.testing)
+                Divider(
+                  thickness: 2,
+                  indent: 40,
+                ),
+              if (authProvider.userModel.role == 'admin')
+                ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.home),
+                      SizedBox(width: 8,),
+                      Text('Add Patient (bulk)',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                    ],
+                  ),
+                  onTap: () {
+                    // Add action for menu item 1
+                    Navigator.pop(context); // Close the drawer
+                    // go to home screen
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => DataLoadingScreen()));
+                  },
+                ),
+              if (authProvider.userModel.role == 'admin')  
+                Divider(
+                  thickness: 2,
+                  indent: 40,
+                ),                
               // ... Rest of your Drawer items
               if (authProvider.userModel.role == 'admin')
                 ListTile(

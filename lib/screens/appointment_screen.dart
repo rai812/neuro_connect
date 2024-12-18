@@ -183,6 +183,18 @@ class BookingDetailScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 14, color: Colors.black54),
                         ),
+                        SizedBox(height: 20),
+                        Text(
+                          "Token Number: ${booking.bookingModel.tokenNumber}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                        if (booking.bookingModel.remark.isNotEmpty && ( authProvider.userModel.role == 'admin' || authProvider.userModel.role == 'Doctor'))
+                          Text(
+                            "Remark: ${booking.bookingModel.remark}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14, color: Colors.black54),
+                          ),
                         // SizedBox(height: 10),
                         // Text(
                         //   'Appointment Time: ${booking.bookingModel.appointmentTime}',
@@ -224,6 +236,25 @@ class BookingDetailScreen extends StatelessWidget {
                                   },
                                   child: Text('Download Prescription'),
                                 ),
+                              SizedBox(height: 10),
+                              if (booking.prescription.reportFileId.isNotEmpty)
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    // Add logic to view the prescription file
+                                    // download the file from network
+                                    String fileUrl = booking.prescription.reportFileId; // Replace with the actual file URL
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SaveFileScreen(fileUrl: fileUrl),
+                                      ),
+                                    );
+
+                                    // Open the downloaded file
+                                    // OpenFile.open(savePath);
+                                  },
+                                  child: Text('Download Report'),
+                                ),  
                             ],
                           ),
                       ],
@@ -315,7 +346,10 @@ class _SaveFileScreenState extends State<SaveFileScreen> {
                       return;
                     }
                     String fileUrl = widget.fileUrl; // Replace with the actual file URL
-                    String fileName = 'prescription.png'; // Replace with the desired file name
+                    // extract the filename from the fileUrl using path package or any other method
+                    String fileName = fileUrl.split('/').last;
+                    // now filename will have option parameters, so remove them
+                    fileName = fileName.split('?')[0];
 
                     // Use the dio package to download the file
                     Dio dio = Dio();
@@ -591,7 +625,8 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
   String _selectedPaymentStatus = 'Not Paid';
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
-
+  final TextEditingController tokenController = TextEditingController();
+  final TextEditingController reffereController = TextEditingController();
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -798,6 +833,24 @@ Widget _customPopupItemBuilderPatient(BuildContext context, PatientInfoModel ite
                   ),
                 ),
                 SizedBox(height: 16),
+                Text("Token Number"),
+                TextField(
+                  controller: tokenController,
+                  decoration: InputDecoration(
+                    labelText: 'Token Number',
+                    hintText: 'Enter Token Number',
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text("Reffered By"),
+                TextField(
+                  controller: reffereController,
+                  decoration: InputDecoration(
+                    labelText: 'Reffered By',
+                    hintText: 'Enter Reffered By',
+                  ),
+                ),
+                SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () async {
                     String id = await authProvider.getNewBookingId();
@@ -811,6 +864,8 @@ Widget _customPopupItemBuilderPatient(BuildContext context, PatientInfoModel ite
                       doctorId: _selectedDoctor,
                       prescriptionId: '',
                       timestamp: getTimeStamp(_selectedDate!, _selectedTime!),
+                      tokenNumber: tokenController.text,
+                      remark: reffereController.text,
                     );
 
                     authProvider.saveBookingDataToFirebase(context: context, booking: booking, onSuccess: () {
@@ -843,6 +898,7 @@ class PrescriptionFormScreen extends StatefulWidget {
 class _PrescriptionFormScreen extends State<PrescriptionFormScreen>  {
   
   File? prescription;
+  File? report;
   final remakrkController = TextEditingController();
   final diagnosisController = TextEditingController();
   @override
@@ -862,6 +918,11 @@ class _PrescriptionFormScreen extends State<PrescriptionFormScreen>  {
     // for selecting image
   void selectImage() async {
     prescription = await pickImage(context);
+    setState(() {});
+  }
+
+  void selectReport() async {
+    report = await pickDocument(context);
     setState(() {});
   }
 
@@ -900,7 +961,19 @@ class _PrescriptionFormScreen extends State<PrescriptionFormScreen>  {
               ),
               
             ),
-            SizedBox(height: 16.0),  
+            SizedBox(height: 16.0), 
+            InkWell(
+              onTap: () => selectReport(),
+              child: Row(
+                children: [
+                  Icon(Icons.add_a_photo),
+                  SizedBox(width: 8.0),
+                  Text('Add Report'),
+                ],
+              ),
+              
+            ),
+            SizedBox(height: 16.0), 
             textFeld(
             label: 'Diagnosis',
             hintText: diagnosisController.text,
@@ -923,25 +996,42 @@ class _PrescriptionFormScreen extends State<PrescriptionFormScreen>  {
             ElevatedButton(
               onPressed: () async{
                 // Add logic to submit the feedback and rating
+                var diagnosis = diagnosisController.text.split(',');
+                if (diagnosis.length < 1 || diagnosis[0] == 'Commans Seperated Diagnosis') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please enter diagnosis'),
+                    ),
+                  );
+                  return;
+                }
+                var remark = remakrkController.text;
+                if (remark == 'Any Remarks') {
+                  remark = '';
+                }
                 // ...
                 final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
                 String id = await authProvider.getNewPrescriptionId();
                 PrescriptionModel prescriptionModel = PrescriptionModel(
                   id: id,
                   fileId: '',
-                  diagnosisList: diagnosisController.text.split(','),
+                  diagnosisList: diagnosis,
                   remarks: remakrkController.text,
+                  reportFileId: '',
                 );
-                authProvider.savePrescriptionDataToFirebase(context: context, prescriptionModel: prescriptionModel, prescriptionFile: prescription!, onSuccess: () {
+                authProvider.savePrescriptionDataToFirebase(context: context, prescriptionModel: prescriptionModel, prescriptionFile: prescription, reportFile: report, onSuccess: () {
+                  // check if context is valid 
+                 if (context != null) { 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Prescription added successfully!'),
                     ),
                   );
                   Navigator.pop(context);
+                }
                 }, bookingDetails: widget.booking);
                 // Close the modal bottom sheet
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
               },
               // style: ElevatedButton.styleFrom(foregroundColor: Color(0xFF3E69FE)),
               child: Text(
@@ -1042,7 +1132,9 @@ class FeedbackForm extends StatelessWidget {
         paymentStatus: 'Not Paid', 
         doctorId: authProvider.doctorsInfoModel[0].id, 
         prescriptionId: '',
-        timestamp: DateTime.fromMillisecondsSinceEpoch(0)
+        timestamp: DateTime.fromMillisecondsSinceEpoch(0),
+        tokenNumber: '',
+        remark: '',
         );
 
       authProvider.saveBookingDataToFirebase(context: context, booking: booking, onSuccess: () {

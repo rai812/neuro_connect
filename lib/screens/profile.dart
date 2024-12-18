@@ -1,4 +1,5 @@
 import 'package:digi_diagnos/model/user_model.dart';
+import 'package:digi_diagnos/screens/appointment_screen.dart';
 import 'package:digi_diagnos/screens/phone.dart';
 import 'package:digi_diagnos/screens/user_info.dart';
 import 'package:digi_diagnos/widgets/drawer.dart';
@@ -230,7 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }
               },
             ),
-          );;
+          );
     } else if (authProvider.role == 'Doctor') {
 
       return Container(
@@ -546,7 +547,10 @@ class _DoctorCardState extends State<DoctorCard> {
         paymentStatus: 'Not Paid', 
         doctorId: doctorId, 
         prescriptionId: '',
-        timestamp: DateTime.fromMillisecondsSinceEpoch(0));
+        timestamp: DateTime.fromMillisecondsSinceEpoch(0),
+        tokenNumber: '',
+        remark: '',
+        );
 
       authProvider.saveBookingDataToFirebase(context: context, booking: booking, onSuccess: () {
         // show the message on the Global Snackbar
@@ -595,6 +599,7 @@ class PatientCard extends StatelessWidget {
       child: 
        Card(
       margin: EdgeInsets.all(8.0),
+
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       elevation: 5.0,
       child: Padding(
@@ -691,12 +696,114 @@ class PatientCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                TextButton(
+                  onPressed: () {
+                    // TODO patient profile screen  
+                    Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PatientDetailsScreen(patientInfoModel: patientInfoModel),
+                                ),
+                    );
+                  },
+                  child: Text(
+                    'Info',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 14,
+                    ),
+                  ),
+                )
               ],
             ),
           ],
         ),
       ),
     ),
+    );
+  }
+}
+
+class PatientDetailsScreen extends StatelessWidget {
+  final PatientInfoModel patientInfoModel;
+  const PatientDetailsScreen({Key? key, required this.patientInfoModel}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    Future<List<BookingDetails>> getBookingForPatient (PatientInfoModel patientInfoModel) async {
+      List<BookingDetails> bookings = await authProvider.getBookingDetailsByPatient(patientInfoModel, "pending", ""); 
+      bookings.addAll(await authProvider.getBookingDetailsByPatient(patientInfoModel, "scheduled", ""));
+      bookings.addAll(await authProvider.getBookingDetailsByPatient(patientInfoModel, "completed", ""));
+      return bookings; 
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Patient Details'),
+        // back button
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Name: ${patientInfoModel.name}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Phone: ${patientInfoModel.userId ?? "N/A"}',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Email: ${patientInfoModel.email ?? "N/A"}',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Date of Birth: ${patientInfoModel.dob ?? "N/A"}',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Bookings:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Expanded(
+              child: FutureBuilder<List<BookingDetails>>(
+                future: getBookingForPatient(patientInfoModel),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text("Error: ${snapshot.error}"));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text("No bookings found."));
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (context, index) {
+                        final booking = snapshot.data![index];
+                        return BookingCard(booking: booking);
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

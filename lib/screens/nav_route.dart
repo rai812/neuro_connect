@@ -1,4 +1,5 @@
 import 'package:digi_diagnos/screens/allServices.dart';
+import 'package:digi_diagnos/screens/help.dart';
 import 'package:digi_diagnos/screens/profile.dart';
 import 'package:digi_diagnos/screens/user_info.dart';
 import 'package:digi_diagnos/screens/search.dart';
@@ -89,6 +90,126 @@ class _NavBarState extends State<NavBar> {
       } else {
         return Text("Book Appointment");;
       }
+    }
+
+    Widget getFloatingButton() {
+     return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            onPressed: () async {
+                if (selectedIndex == screens.length - 1) {
+                  if (authProvider.role == "Doctor") {
+                    Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => ADDDoctorScreen())
+                    );
+                  } else if (authProvider.role == "Patient") {  
+                    Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => AddPatientScreen())
+                    );
+                  }
+                  else if (authProvider.role == "admin") {
+                    Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => AdminAddPatientScreen())
+                    );
+                  }
+                  else {
+                    Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => AllDoctorsScreen())
+                    );
+                  }
+                // Navigator.pop(context);
+                }
+                else {
+                  // Admin booking screen for admin and doctor TODO
+                  if (authProvider.role == "Doctor") {
+                    Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => NewBookingScreen())
+                    );
+                  } else if (authProvider.role == "Patient") {  
+                    Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => AllDoctorsScreen())
+                    );
+                  }
+                  else if (authProvider.role == "admin") {
+                    Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => NewBookingScreen())
+                    );
+                  }
+                  else {
+                  Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => AllDoctorsScreen())
+                    );
+                  }
+                }
+            },
+            backgroundColor: Color(0xFF3E69FE),
+            icon:getIcon(),
+            label: getLabel(),
+
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          if (authProvider.role == "Patient")
+            FloatingActionButton.extended(
+            onPressed: () async {
+
+              if (await authProvider.isHelpAlreadyExist(authProvider.patientsInfoModel[authProvider.activePatientIndex].id, 'pending'))
+              {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                  title: Text('Clinic has already been notified for previous help request'),
+                  content: Text('Please wait for the clinic to respond back.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                    Navigator.of(context).pop();
+                      },
+                      child: Text('Okay'),
+                    ),
+                  ],
+                    );
+                  },
+                );
+
+              }
+              else 
+              {
+                // gaurd with mounted check
+                if (!mounted) return;
+                await triggerHelp(context);
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                  title: Text('Clinic has been notified'),
+                  content: Text('Please wait for the clinic to respond back.'),
+                  actions: [
+                    
+                    TextButton(
+                      onPressed: () {
+                    Navigator.of(context).pop();
+                      },
+                      child: Text('Okay'),
+                    ),
+                  ],
+                    );
+                  },
+                );
+
+              }
+              // show a pop up saying that the clinic is notified and will contact you soon
+            },
+            backgroundColor: Color(0xFF3E69FE),
+            icon:Icon(Icons.help_outline_rounded),
+            label: Text("Get Help"),
+
+          )
+        ]
+      );
     }
 
     return Scaffold(

@@ -1,3 +1,5 @@
+import 'package:digi_diagnos/model/booking_model.dart';
+import 'package:digi_diagnos/screens/help.dart';
 import 'package:digi_diagnos/screens/home.dart';
 import 'package:flutter/material.dart';
 // import 'package:digi_diagnos/model/user_model.dart';
@@ -29,7 +31,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -66,6 +68,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: true);
     var tabs = [
+        Tab(text: 'Pending Help Requests'),
         Tab(text: 'Pending Bookings'),
         Tab(text: 'Scheduled Bookings'),
         Tab(text: 'Completed Bookings'),
@@ -89,62 +92,120 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
 
         controller: _tabController,
         children: [
+          // Pending Help Requests Tab
+          Center(
+            child: 
+            SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pending Help Requests",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w500,
+                            color: const Color.fromARGB(179, 80, 105, 248),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    FutureBuilder<List<HelpModel>>(
+                      // Replace with the actual method to fetch the top 2 labs
+                      future: authProvider.getHelpModels("Pending", ""), // get pending helps
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text("Error: ${snapshot.error}"),
+                          );
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Center(
+                            child: Text("No Pending Help request."),
+                          );
+                        } else {
+                          // Use the fetched list of top labs to create LabCard widgets
+                          List<HelpModel> topLabs = snapshot.data!;
+              
+                          return Column(
+                            children: topLabs.map((help) => HelpCard(help: help)).toList(),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),           
+
+          ),          
           // Pending Bookings Tab
           Center(
             child: 
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Pending Bookings",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w500,
-                          color: const Color.fromARGB(179, 80, 105, 248),
+            SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pending Bookings",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w500,
+                            color: const Color.fromARGB(179, 80, 105, 248),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  FutureBuilder<List<BookingDetails>>(
-                    // Replace with the actual method to fetch the top 2 labs
-                    future: authProvider.getBookingDetails("Pending", ""), // get pending bookings
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text("Error: ${snapshot.error}"),
-                        );
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(
-                          child: Text("No Pending booking request."),
-                        );
-                      } else {
-                        // Use the fetched list of top labs to create LabCard widgets
-                        List<BookingDetails> topLabs = snapshot.data!;
-
-                        return Column(
-                          children: topLabs.map((booking) => BookingCard(booking: booking)).toList(),
-                        );
-                      }
-                    },
-                  ),
-                ],
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    FutureBuilder<List<BookingDetails>>(
+                      // Replace with the actual method to fetch the top 2 labs
+                      future: authProvider.getBookingDetails("Pending", ""), // get pending bookings
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text("Error: ${snapshot.error}"),
+                          );
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Center(
+                            child: Text("No Pending booking request."),
+                          );
+                        } else {
+                          // Use the fetched list of top labs to create LabCard widgets
+                          List<BookingDetails> topLabs = snapshot.data!;
+              
+                          return Column(
+                            children: topLabs.map((booking) => BookingCard(booking: booking)).toList(),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),           
 
           ),
           // Scheduled Bookings Tab
           Center(
-            child: Container(
+            child: SingleChildScrollView(
               child: Column(
+                // allow th escreeen to scroll
+
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
@@ -214,49 +275,55 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
 
           Center(
             child: 
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+            SingleChildScrollView(
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Completed Bookings",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w500,
-                          color: const Color.fromARGB(179, 80, 105, 248),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(                  
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Completed Bookings",
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.w500,
+                                color: const Color.fromARGB(179, 80, 105, 248),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  FutureBuilder<List<BookingDetails>>(
-                    // Replace with the actual method to fetch the top 2 labs
-                    future: authProvider.getBookingDetails("Completed", ""), // get pending bookings
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text("Error: ${snapshot.error}"),
-                        );
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(
-                          child: Text("No Complete booking request."),
-                        );
-                      } else {
-                        // Use the fetched list of top labs to create LabCard widgets
-                        List<BookingDetails> topLabs = snapshot.data!;
-
-                        return Column(
-                          children: topLabs.map((booking) => BookingCard(booking: booking)).toList(),
-                        );
-                      }
-                    },
+                        SizedBox(height: 5),
+                        FutureBuilder<List<BookingDetails>>(
+                          // Replace with the actual method to fetch the top 2 labs
+                          future: authProvider.getBookingDetails("Completed", ""), // get pending bookings
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text("Error: ${snapshot.error}"),
+                              );
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return Center(
+                                child: Text("No Complete booking request."),
+                              );
+                            } else {
+                              // Use the fetched list of top labs to create LabCard widgets
+                              List<BookingDetails> topLabs = snapshot.data!;
+                  
+                              return Column(
+                                children: topLabs.map((booking) => BookingCard(booking: booking)).toList(),
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

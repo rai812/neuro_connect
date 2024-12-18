@@ -1,5 +1,6 @@
 import 'package:digi_diagnos/model/booking_model.dart';
 import 'package:digi_diagnos/model/user_model.dart';
+import 'package:digi_diagnos/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/auth_provider.dart';
@@ -186,7 +187,10 @@ class _BookingScreenState extends State<BookingScreen> {
         paymentStatus: 'Not Paid', 
         doctorId: authProvider.doctorsInfoModel[0].id, 
         prescriptionId: '',
-        timestamp: DateTime.fromMillisecondsSinceEpoch(0));
+        timestamp: DateTime.fromMillisecondsSinceEpoch(0),
+        tokenNumber: '',
+        remark: '',
+        );
 
       authProvider.saveBookingDataToFirebase(context: context, booking: booking, onSuccess: () {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -200,7 +204,7 @@ class _BookingScreenState extends State<BookingScreen> {
       print('Error booking appointment: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error booking appointment. Please try again.'),
+          content: Text('Error booking appointment. p try again.'),
         ),
       );
     }
@@ -241,18 +245,22 @@ class _BookingEditScreenState extends State<BookingEditScreen> {
   // String currentStatus = 'Pending'; // Default status selection
   static const List<String> statusList = <String>['Pending', 'Scheduled', 'Completed'];
   String currentStatus = statusList.first;
-
+  final TextEditingController tokenController = TextEditingController();
+  final TextEditingController remarkController = TextEditingController();
   @override
   void initState() {
     super.initState();
     dateController.text = widget.apponintment.bookingModel.appointmentDate;
     timeController.text = widget.apponintment.bookingModel.appointmentTime;
     statusController.text = widget.apponintment.bookingModel.appointmentStatus;
+    currentStatus = statusList.firstWhere((test) => test.toLowerCase() == widget.apponintment.bookingModel.appointmentStatus);
+    tokenController.text = widget.apponintment.bookingModel.tokenNumber;
+    remarkController.text = widget.apponintment.bookingModel.remark;
   }
 
   @override
   Widget build(BuildContext context) {
-    currentStatus = statusList.firstWhere((test) => test.toLowerCase() == widget.apponintment.bookingModel.appointmentStatus);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('Update Appointment'),
@@ -380,6 +388,24 @@ class _BookingEditScreenState extends State<BookingEditScreen> {
                   },
                 ).toList(),
               ),
+              SizedBox(height: 16),
+              TextField(
+                controller: tokenController,
+                decoration: InputDecoration(
+                  labelText: 'Token Number',
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.all(12.0),
+                ),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: remarkController,
+                decoration: InputDecoration(
+                  labelText: 'Remark',
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.all(12.0),
+                ),
+              ),
               const SizedBox(height: 16),
               SizedBox(
                 height: 50,
@@ -411,7 +437,7 @@ class _BookingEditScreenState extends State<BookingEditScreen> {
       appointmentStatus: statusController.text.toLowerCase(), 
       paymentStatus: booking.paymentStatus, 
       doctorId: booking.doctorId, 
-      prescriptionId: booking.prescriptionId, timestamp: booking.timestamp);
+      prescriptionId: booking.prescriptionId, timestamp: booking.timestamp, tokenNumber: tokenController.text, remark: remarkController.text);
 
       authProvider.saveBookingDataToFirebase(context: context, booking: updatedBooking, onSuccess: () {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -11,12 +11,61 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    ap.addListener(_onAuthProviderChange);
+  }
+
+  @override
+  void dispose() {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    ap.removeListener(_onAuthProviderChange);
+    super.dispose();
+  }
+
+  void _onAuthProviderChange() {
+    // Handle changes from AuthProvider if needed
+    setState(() {
+      // Rebuild the widget with the updated data
+    });
+  }
   final _formKey = GlobalKey<FormState>();
   String _selectedCriteria = 'Mobile';
   String _searchQuery = '';
   List<PatientInfoModel> _searchResults = [];
-  
+  DateTime? _fromDate = DateTime.now();
+  DateTime? _toDate = DateTime.now();
+  final TextEditingController fromDateController = TextEditingController();
+  final TextEditingController toDateController = TextEditingController();
 
+  Future<void> _selectFromDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _fromDate ?? DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _fromDate)
+      setState(() {
+        fromDateController.text = '${picked.day}/${picked.month}/${picked.year}';
+        _fromDate = picked;
+      });
+  }
+  Future<void> _selectToDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _toDate ?? DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _fromDate)
+      setState(() {
+        toDateController.text = '${picked.day}/${picked.month}/${picked.year}';
+        _toDate = picked;
+      });
+  }
   void _search() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -29,6 +78,8 @@ class _SearchScreenState extends State<SearchScreen> {
         searchResults = await ap.getPatientByName(_searchQuery);
       } else if (_selectedCriteria == 'Diagnosys') {
         searchResults = await ap.getPatientByDiagnosys(_searchQuery);
+      } else if (_selectedCriteria == 'Referral') {
+        searchResults = await ap.getPatientByReferral(_searchQuery, _fromDate!, _toDate!);
       }
       // For demonstration, we'll use a dummy list
       setState(() {
@@ -78,6 +129,58 @@ class _SearchScreenState extends State<SearchScreen> {
                   labelText: 'Search Criteria',
                 ),
               ),
+              // if search criteria is referral. then show a date range picker
+              if (_selectedCriteria == 'Referral')
+                Column(
+                  children: [
+                    SizedBox(height: 16),
+                    Text('Select Date Range'),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: 
+                          // change this to date picker
+                          InkWell(
+                            onTap: () async {
+                              await _selectFromDate(context);
+                            },
+                            child: IgnorePointer(
+                              child: TextField(
+                                controller: fromDateController,
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  labelText: 'From',
+                                  suffixIcon: Icon(Icons.calendar_today),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: 
+                          // change this to date picker
+                          InkWell(
+                            onTap: () async {
+                              await _selectToDate(context);
+                            },
+                            child: IgnorePointer(
+                              child: TextField(
+                                controller: toDateController,
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  labelText: 'To',
+                                  suffixIcon: Icon(Icons.calendar_today),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Search Query',

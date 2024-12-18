@@ -27,6 +27,13 @@ class _DoctorScheduleScreenState extends State<DoctorScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final AuthProvider authProvider =
+    // Provider.of<AuthProvider>(context, listen: true);
+    // _fetchAppointmentsForMonth(_focusedDay);
+    // rebuild the appointment list when the provider changes
+    Provider.of<AuthProvider>(context, listen: true).addListener(() {
+      _fetchAppointmentsForMonth(_focusedDay);
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text('Dr ${widget.doctor.name}\'s Schedule'),
@@ -116,6 +123,7 @@ class _DoctorScheduleScreenState extends State<DoctorScheduleScreen> {
   // }
 
   Future<void> _fetchAppointmentsForMonth(DateTime focusedDay) async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true; // Show spinner while loading data
     });
@@ -139,6 +147,9 @@ class _DoctorScheduleScreenState extends State<DoctorScheduleScreen> {
         fetchedAppointments[date]!.add(booking);
       }
     });
+
+    // check if not disposed
+    if (!mounted) return;
 
     setState(() {
       _appointments.addAll(fetchedAppointments);

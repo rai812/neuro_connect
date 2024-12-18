@@ -5,12 +5,14 @@ class PrescriptionModel {
   List<String> diagnosisList;
   String remarks;
   String fileId;
+  String reportFileId;
 
   PrescriptionModel({
     required this.id,
     required this.fileId,
     required this.diagnosisList,
     required this.remarks,
+    required this.reportFileId,
   });
 
  Map<String, dynamic> toMap() {
@@ -19,6 +21,7 @@ class PrescriptionModel {
       'fileId': fileId,
       'diagnosisList': diagnosisList,
       'remarks': remarks,
+      'reportFileId': reportFileId,
     };
   }
 
@@ -32,6 +35,9 @@ class PrescriptionModel {
       fileId: map['fileId'],
       diagnosisList: dList,
       remarks: map['remarks'],
+      // if not present, then set to empty string
+      reportFileId: map['reportFileId'] ?? '',
+
     );
   }
 }
