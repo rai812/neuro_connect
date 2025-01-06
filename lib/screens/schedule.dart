@@ -1,5 +1,5 @@
-import 'package:digi_diagnos/provider/auth_provider.dart';
-import 'package:digi_diagnos/screens/appointment_screen.dart';
+import 'package:neurocare/provider/auth_provider.dart';
+import 'package:neurocare/screens/appointment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';

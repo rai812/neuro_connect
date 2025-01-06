@@ -1,4 +1,4 @@
-package com.example.digi_diagnos
+package com.satya.neurocare
 
 import io.flutter.embedding.android.FlutterActivity
 

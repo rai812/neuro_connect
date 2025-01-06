@@ -1,4 +1,4 @@
-import 'package:digi_diagnos/screens/nav_route.dart';
+import 'package:neurocare/screens/nav_route.dart';
 import 'package:flutter/material.dart';
 import '../provider/auth_provider.dart';
 import '../screens/user_info.dart';

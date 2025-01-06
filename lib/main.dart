@@ -1,5 +1,5 @@
-import 'package:digi_diagnos/provider/cart_provider.dart';
-import 'package:digi_diagnos/screens/welcomScreen.dart';
+import 'package:neurocare/provider/cart_provider.dart';
+import 'package:neurocare/screens/welcomScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts package

@@ -1,7 +1,7 @@
-import 'package:digi_diagnos/model/user_model.dart';
-import 'package:digi_diagnos/screens/appointment_screen.dart';
-import 'package:digi_diagnos/screens/profile.dart';
-import 'package:digi_diagnos/screens/testDetails.dart';
+import 'package:neurocare/model/user_model.dart';
+import 'package:neurocare/screens/appointment_screen.dart';
+import 'package:neurocare/screens/profile.dart';
+import 'package:neurocare/screens/testDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

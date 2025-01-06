@@ -1,5 +1,5 @@
-import 'package:digi_diagnos/screens/profile.dart';
-import 'package:digi_diagnos/widgets/drawer.dart';
+import 'package:neurocare/screens/profile.dart';
+import 'package:neurocare/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/auth_provider.dart';

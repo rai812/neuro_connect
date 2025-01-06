@@ -1,6 +1,6 @@
-import 'package:digi_diagnos/model/booking_model.dart';
-import 'package:digi_diagnos/model/user_model.dart';
-import 'package:digi_diagnos/utils/utils.dart';
+import 'package:neurocare/model/booking_model.dart';
+import 'package:neurocare/model/user_model.dart';
+import 'package:neurocare/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/auth_provider.dart';

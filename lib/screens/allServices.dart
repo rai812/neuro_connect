@@ -1,5 +1,5 @@
-import 'package:digi_diagnos/screens/profile.dart';
-import 'package:digi_diagnos/screens/testDetails.dart';
+import 'package:neurocare/screens/profile.dart';
+import 'package:neurocare/screens/testDetails.dart';
 import 'package:flutter/material.dart';
 import '../model/testModal.dart'; // Replace with the actual import path
 import '../provider/auth_provider.dart';

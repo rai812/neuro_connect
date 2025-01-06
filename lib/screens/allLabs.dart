@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../provider/auth_provider.dart';
-import 'package:digi_diagnos/model/labModal.dart';
+import 'package:neurocare/model/labModal.dart';
 
 import 'details.dart';
 

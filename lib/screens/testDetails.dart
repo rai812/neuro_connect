@@ -1,4 +1,4 @@
-import 'package:digi_diagnos/screens/details.dart';
+import 'package:neurocare/screens/details.dart';
 import 'package:flutter/material.dart';
 import '../model/testModal.dart';
 import '../model/labModal.dart';

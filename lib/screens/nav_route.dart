@@ -1,8 +1,8 @@
-import 'package:digi_diagnos/screens/allServices.dart';
-import 'package:digi_diagnos/screens/help.dart';
-import 'package:digi_diagnos/screens/profile.dart';
-import 'package:digi_diagnos/screens/user_info.dart';
-import 'package:digi_diagnos/screens/search.dart';
+import 'package:neurocare/screens/allServices.dart';
+import 'package:neurocare/screens/help.dart';
+import 'package:neurocare/screens/profile.dart';
+import 'package:neurocare/screens/user_info.dart';
+import 'package:neurocare/screens/search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

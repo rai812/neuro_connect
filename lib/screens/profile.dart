@@ -1,15 +1,13 @@
-import 'package:digi_diagnos/model/user_model.dart';
-import 'package:digi_diagnos/screens/appointment_screen.dart';
-import 'package:digi_diagnos/screens/phone.dart';
-import 'package:digi_diagnos/screens/user_info.dart';
-import 'package:digi_diagnos/widgets/drawer.dart';
+import 'package:neurocare/model/user_model.dart';
+import 'package:neurocare/screens/appointment_screen.dart';
+import 'package:neurocare/screens/user_info.dart';
+import 'package:neurocare/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:digi_diagnos/provider/auth_provider.dart';
+import 'package:neurocare/provider/auth_provider.dart';
 import '../model/booking_model.dart';
 // import 'adminScreen.dart';
-import 'admin_home.dart';
-import 'editProfile.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);

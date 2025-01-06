@@ -23,6 +23,24 @@ class WhatsAppMessageSender {
     required String languageCode,
     Map<String, dynamic>? parameters,
   }) async {
+
+    // check if the to number is valid -> it should start from 91 and should be 12 digits 
+    // if it is 10 digits then add 91 in the beginning
+    if (to.startsWith('0') && to.length == 11) {
+      to = '91' + to.substring(1);
+    }
+    else if (to.startsWith('0') && to.length == 10) {
+      to = '91' + to;
+    }
+    else if (to.length == 10) {
+      to = '91' + to;    
+    }
+    
+    if (!to.startsWith('91') && to.length != 12) {
+      print('Invalid phone number');
+      return;
+    }
+
     final Map<String, dynamic> body = {
       "messaging_product": "whatsapp",
       "to": to,

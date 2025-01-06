@@ -1,4 +1,4 @@
-import 'package:digi_diagnos/screens/phone.dart';
+import 'package:neurocare/screens/phone.dart';
 import 'package:flutter/material.dart';
 import '../provider/auth_provider.dart';
 import '../widgets/custom_button.dart';

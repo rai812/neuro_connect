@@ -5,7 +5,7 @@
 #define MyAppVersion "1.5"
 #define MyAppPublisher "Neuro Link, Inc."
 #define MyAppURL "https://www.example.com/"
-#define MyAppExeName "digi_diagnos.exe"
+#define MyAppExeName "satyaneurocare.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -47,8 +47,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\cloud_firestore_plugin.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\concrt140.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\digi_diagnos.exp"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\digi_diagnos.lib"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\satyaneurocare.exp"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\satyaneurocare.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\file_selector_windows_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\firebase_auth_plugin.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\abhrai\Documents\neuro_connect\build\windows\x64\runner\Release\firebase_core_plugin.lib"; DestDir: "{app}"; Flags: ignoreversion

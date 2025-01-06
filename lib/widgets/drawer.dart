@@ -1,14 +1,16 @@
-import 'package:digi_diagnos/screens/referrals.dart';
-import 'package:digi_diagnos/screens/user_info.dart';
+import 'package:neurocare/screens/dashboard.dart';
+import 'package:neurocare/screens/referrals.dart';
+import 'package:neurocare/screens/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:digi_diagnos/provider/auth_provider.dart';
-import 'package:digi_diagnos/screens/home.dart';
-import 'package:digi_diagnos/screens/profile.dart';
-import 'package:digi_diagnos/screens/phone.dart';
-import 'package:digi_diagnos/screens/admin_home.dart';
-import 'package:digi_diagnos/screens/referrals.dart';
-import 'package:digi_diagnos/screens/admin_load.dart';
+import 'package:neurocare/provider/auth_provider.dart';
+import 'package:neurocare/screens/home.dart';
+import 'package:neurocare/screens/profile.dart';
+import 'package:neurocare/screens/phone.dart';
+import 'package:neurocare/screens/admin_home.dart';
+import 'package:neurocare/screens/referrals.dart';
+import 'package:neurocare/screens/admin_load.dart';
+import 'package:neurocare/screens/dashboard.dart';
 import '../screens/data_upload.py';
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({
@@ -83,6 +85,60 @@ class DrawerWidget extends StatelessWidget {
                   thickness: 2,
                   indent: 40,
                 ),
+                if (authProvider.userModel.role == 'admin')
+                ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.home),
+                      SizedBox(width: 8,),
+                      Text('Admin Dashboard',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                    ],
+                  ),
+                  onTap: () {
+                    // Add action for menu item 1
+                    Navigator.pop(context); // Close the drawer
+                    // go to home screen
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                  },
+                ),
+              if (authProvider.userModel.role == 'admin')
+                Divider(
+                  thickness: 2,
+                  indent: 40,
+                ),
+              if (authProvider.userModel.role == 'admin')
+                ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.home),
+                      SizedBox(width: 8,),
+                      Text('Reset Password',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                    ],
+                  ),
+                  onTap: () {
+                    // Add action for menu item 1
+                    Navigator.pop(context); // Close the drawer
+                    // go to home screen
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPasswordScreen()));
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                  },
+                ),
+              if (authProvider.userModel.role == 'admin' )
+                Divider(
+                  thickness: 2,
+                  indent: 40,
+                ),  
               // check if user is admin and testing is set in env
               if (authProvider.userModel.role == 'admin' && authProvider.testing)
                 ListTile(

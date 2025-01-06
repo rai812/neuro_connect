@@ -1,5 +1,5 @@
-import 'package:digi_diagnos/model/user_model.dart';
-import 'package:digi_diagnos/screens/home.dart';
+import 'package:neurocare/model/user_model.dart';
+import 'package:neurocare/screens/home.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

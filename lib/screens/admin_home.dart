@@ -1,10 +1,10 @@
-import 'package:digi_diagnos/model/booking_model.dart';
-import 'package:digi_diagnos/screens/help.dart';
-import 'package:digi_diagnos/screens/home.dart';
+import 'package:neurocare/model/booking_model.dart';
+import 'package:neurocare/screens/help.dart';
+import 'package:neurocare/screens/home.dart';
 import 'package:flutter/material.dart';
-// import 'package:digi_diagnos/model/user_model.dart';
-import 'package:digi_diagnos/screens/appointment_screen.dart';
-// import 'package:digi_diagnos/screens/testDetails.dart';
+// import 'package:neurocare/model/user_model.dart';
+import 'package:neurocare/screens/appointment_screen.dart';
+// import 'package:neurocare/screens/testDetails.dart';
 // import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

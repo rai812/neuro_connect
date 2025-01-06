@@ -1,4 +1,4 @@
-import 'package:digi_diagnos/screens/booking.dart';
+import 'package:neurocare/screens/booking.dart';
 import 'package:flutter/material.dart';
 
 class OffersCard extends StatelessWidget {

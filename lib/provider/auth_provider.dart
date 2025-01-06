@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:digi_diagnos/model/diagnosis_model.dart';
-import 'package:digi_diagnos/model/medicine_model.dart';
-import 'package:digi_diagnos/model/prescription_model.dart';
-// import 'package:digi_diagnos/screens/home.dart';
+import 'package:neurocare/model/diagnosis_model.dart';
+import 'package:neurocare/model/medicine_model.dart';
+import 'package:neurocare/model/prescription_model.dart';
+// import 'package:neurocare/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -139,7 +139,14 @@ class AuthProvider extends ChangeNotifier {
 
   List<PatientInfoModel> _patients = [];
   List<PatientInfoModel> get patients => _patients;
-
+  int _totalPatients = 0;
+  int get totalPatients => _totalPatients;
+  int _pendingBookings = 0;
+  int get pendingBookings => _pendingBookings;
+  int _scheduledBookings = 0;
+  int get scheduledBookings => _scheduledBookings;
+  int _completedBookings = 0;
+  int get completedBookings => _completedBookings;
 
 
  final whatsapp = WhatsAppMessageSender(whatsAppAccessToken, fromNumberId);
@@ -816,8 +823,6 @@ Future<void> deleteAllUsers() async {
           doc.reference.delete();
         }
       });
-
-      _bookings.clear();
       notifyListeners();
     } catch (e) {
       print("Error deleting All doctor: $e");
@@ -881,6 +886,10 @@ Future<void> deleteAllUsers() async {
 
     if (_role == 'Doctor' || _role == 'admin') {
       await getPatientsDataFromFirestore();
+      _totalPatients = _patients.length;
+      _pendingBookings = await getPendingBookingsCount();
+      _scheduledBookings = await getScheduledBookingsCount();
+      _completedBookings = await getCompletedBookingsCount();
     }
 
   }
@@ -1440,6 +1449,49 @@ Future<String> getNewHelpId() async {
       throw e; // Re-throw the exception to propagate it to the caller
     }
   }
+
+  Future<int> getPendingBookingsCount() async {
+    try {
+      QuerySnapshot querySnapshot = await _firebaseFirestore
+          .collection("bookings")
+          .where('appointmentStatus', isEqualTo: 'pending')
+          .get();
+
+      return querySnapshot.docs.length;
+    } catch (e) {
+      print("Error getting pending bookings count: $e");
+      throw e; // Re-throw the exception to propagate it to the caller
+    }
+  }
+  
+    Future<int> getCompletedBookingsCount() async {
+    try {
+      QuerySnapshot querySnapshot = await _firebaseFirestore
+          .collection("bookings")
+          .where('appointmentStatus', isEqualTo: 'completed')
+          .get();
+
+      return querySnapshot.docs.length;
+    } catch (e) {
+      print("Error getting completed bookings count: $e");
+      throw e; // Re-throw the exception to propagate it to the caller
+    }
+  }
+
+    Future<int> getScheduledBookingsCount() async {
+    try {
+      QuerySnapshot querySnapshot = await _firebaseFirestore
+          .collection("bookings")
+          .where('appointmentStatus', isEqualTo: 'scheduled')
+          .get();
+
+      return querySnapshot.docs.length;
+    } catch (e) {
+      print("Error getting scheduled bookings count: $e");
+      throw e; // Re-throw the exception to propagate it to the caller
+    }
+  }
+
 
   Future<List<HelpModel>> getAllHelps({ status, String date = ""}) async {
     try {
@@ -2284,6 +2336,45 @@ Future<void> createUser(UserModel userModel) async {
     catch (e) {
       print('Error creating random user): $e');
       throw e;
+    }
+  }
+
+  Future<void> resetPassword(String phoneNumber) async {
+    try {
+      // Update the user's password in Firestore
+      await _firebaseFirestore.collection('users').doc(phoneNumber).update({
+        'resetPassword': true,
+      });
+      print("Password reset successfully for user: $phoneNumber");
+    } catch (e) {
+      print("Error resetting password: $e");
+      throw e;
+    }
+  }
+
+  Future<void> downloadAndDumpAllData() async {
+    try {
+      // Fetch all collections
+      List<String> collections = ['users', 'patients', 'doctors', 'bookings', 'prescriptions', 'clinics', 'referrals', 'help'];
+
+      // Create a directory to store the dumped data
+      Directory directory = Directory('dumped_data');
+      if (!directory.existsSync()) {
+        directory.createSync();
+      }
+
+      for (String collection in collections) {
+        QuerySnapshot querySnapshot = await _firebaseFirestore.collection(collection).get();
+        List<Map<String, dynamic>> documents = querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+        // Write the data to a JSON file
+        File file = File('${directory.path}/$collection.json');
+        file.writeAsStringSync(jsonEncode(documents));
+      }
+
+      print("Data downloaded and dumped successfully.");
+    } catch (e) {
+      print("Error downloading and dumping data: $e");
     }
   }
 
