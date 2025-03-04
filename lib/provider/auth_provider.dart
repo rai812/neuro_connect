@@ -21,7 +21,6 @@ import '../screens/nav_route.dart';
 import '../utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
-// import 'package:whatsapp/whatsapp.dart';
 import '../utils/whatsapp_utils.dart';
 import 'dart:math';
 
@@ -99,6 +98,8 @@ enum NotificationType {
     dietGenerated,
     defaultMessage,
     bookingPending,
+    askAppointment,
+    askHelp,
   }
 class AuthProvider extends ChangeNotifier {
   bool testing = false;
@@ -197,6 +198,10 @@ class AuthProvider extends ChangeNotifier {
         return 'diet_generated';
       case NotificationType.bookingPending:
         return 'appointment_pending';
+      case NotificationType.askAppointment:
+        return 'ask_appointment';
+      case NotificationType.askHelp:
+        return 'ask_help';
       default:
         return 'hello_world';
     }
@@ -207,8 +212,7 @@ class AuthProvider extends ChangeNotifier {
     switch (type) {
       case NotificationType.accountCreation:
         return {
-          '1': patientName,
-          '2': "TODO app link",
+          '1': patientName
         };
       case NotificationType.bookingScheduled:
         return {
@@ -241,6 +245,17 @@ class AuthProvider extends ChangeNotifier {
         return {
           '1': patientName,
         };
+      case NotificationType.askAppointment:
+        return {
+          '1': patientName,
+          '2': doctorName,
+          '3': PatienNumber,
+        };
+      case NotificationType.askHelp:
+        return {
+          '1': patientName,
+          '2': PatienNumber,
+        };
       default:
         return {
           '1': patientName,
@@ -248,19 +263,19 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  void sendNotification(NotificationType type, String patientName, String clinicName, String PatienNumber, {String? date, String? doctorName}) {
+  void sendNotification(NotificationType type, String to, String patientName, String clinicName, String patientNumber, {String? date, String? doctorName, String clinicNumber = "919953193378"}) {
     // String message = createMessage(type, patientName, clinicName, date: date, doctorName: doctorName);
     // sendMessage(message, PatienNumber);
     // sendSms("919953193378", message); // change this to patient number TODO
     try {
       if (testing) {
         print("Sending message: to 919953193378");
-        whatsapp.sendMessage(to: "919953193378", languageCode: "en", templateName: getTemplateName(type), parameters: getParameters(type, patientName, clinicName, PatienNumber, date: date, doctorName: doctorName));
+        whatsapp.sendMessage(to: "919953193378", languageCode: "en", templateName: getTemplateName(type), parameters: getParameters(type, patientName, clinicName, patientNumber, date: date, doctorName: doctorName));
         return;
       }
       else {
-        print("Sending message: to $PatienNumber");
-        whatsapp.sendMessage(to: PatienNumber, languageCode: "en", templateName: getTemplateName(type), parameters: getParameters(type, patientName, clinicName, PatienNumber, date: date, doctorName: doctorName));
+        print("Sending message: to $to");
+        whatsapp.sendMessage(to: to, languageCode: "en", templateName: getTemplateName(type), parameters: getParameters(type, patientName, clinicName, patientNumber, date: date, doctorName: doctorName));
       }
       
     } catch (e) {
@@ -569,7 +584,7 @@ class AuthProvider extends ChangeNotifier {
       });
       await  getPatientsDataFromFirestore();
 
-      sendNotification(NotificationType.accountCreation, userModel.name, clinicsInfoModel[0].name, userModel.userId, date: "", doctorName: "");
+      sendNotification(NotificationType.accountCreation, userModel.userId, userModel.name, clinicsInfoModel[0].name, userModel.userId, date: "", doctorName: "");
       _isLoading = false;
       notifyListeners();
     } on FirebaseAuthException catch (e) {
@@ -1151,7 +1166,11 @@ void savePrescriptionDataToFirebase({
           String date = booking.appointmentDate + " " + booking.appointmentTime;
 
           // send notification to the patient
-          sendNotification(notificationType, patient.name, _clinicsInfoModel[0].name, patient.userId, date: date, doctorName: doctorName);
+          sendNotification(notificationType, patient.userId, patient.name, _clinicsInfoModel[0].name, patient.userId, date: date, doctorName: doctorName);
+          // if it is pending then send notification to the doctor
+          if (booking.appointmentStatus.toLowerCase() == 'pending') {
+            sendNotification(NotificationType.askAppointment, _clinicsInfoModel[0].phone, patient.name, _clinicsInfoModel[0].name, patient.userId, date: date, doctorName: doctorName, clinicNumber: _clinicsInfoModel[0].phone);
+          }
         onSuccess();
         _isLoading = false;
       final updatedBookingIndex =
@@ -1222,6 +1241,10 @@ Future<String> getNewHelpId() async {
           .set(help.toMap())
           .then((value) {
         onSuccess();
+        // find the name from the current user
+        var patient = _patientsInfoModel.firstWhere((element) => element.id == help.patientId);
+        // send notification to the clinic
+        sendNotification(NotificationType.askHelp, _clinicsInfoModel[0].phone, patient.name, _clinicsInfoModel[0].name, patient.userId, clinicNumber: _clinicsInfoModel[0].phone);
         _isLoading = false;
         notifyListeners();
       });
@@ -2327,7 +2350,8 @@ Future<void> createUser(UserModel userModel) async {
       ClinicInfoModel clinic = ClinicInfoModel(
         id: phoneNumber,
         name: "Clinic ${Random().nextInt(100)}",
-        address: "Address of Clinic ${Random().nextInt(100)}");
+        address: "Address of Clinic ${Random().nextInt(100)}",
+        phone: phoneNumber,);
 
       await _firebaseFirestore.collection('clinics').doc(phoneNumber).set(clinic.toMap()).then( (onValue) async {
             _clinicsInfoModel.add(clinic);

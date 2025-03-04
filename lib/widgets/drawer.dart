@@ -11,7 +11,7 @@ import 'package:neurocare/screens/admin_home.dart';
 import 'package:neurocare/screens/referrals.dart';
 import 'package:neurocare/screens/admin_load.dart';
 import 'package:neurocare/screens/dashboard.dart';
-import '../screens/data_upload.py';
+import '../screens/data_upload.dart';
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({
     super.key,

@@ -17,6 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _obscureText = true;
+  final _formKey = GlobalKey<FormState>();
 
   Country selectedCountry = Country(
     phoneCode: "91",
@@ -43,7 +44,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: SingleChildScrollView(
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 35),
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: _formKey,
               child: Column(
                 children: [
                   Container(
@@ -76,7 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-                  TextFormField(
+                    TextFormField(
                     cursorColor: Colors.black,
                     controller: phoneController,
                     style: const TextStyle(
@@ -85,69 +88,82 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        phoneController.text = value;
+                      phoneController.text = value;
                       });
                     },
                     decoration: InputDecoration(
                       hintText: "Enter phone number",
                       hintStyle: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15,
-                        color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                      color: Colors.grey.shade600,
                       ),
                       contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.black12),
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Colors.black12),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.black12),
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Colors.black12),
                       ),
                       prefixIcon: Container(
-                        padding: const EdgeInsets.all(13.0),
-                        child: InkWell(
-                          onTap: () {
-                            showCountryPicker(
-                              context: context,
-                              countryListTheme: const CountryListThemeData(
-                                bottomSheetHeight: 500,
-                              ),
-                              onSelect: (value) {
-                                setState(() {
-                                  selectedCountry = value;
-                                });
-                              },
-                            );
-                          },
-                          child: Text(
-                            "${selectedCountry.flagEmoji} + ${selectedCountry.phoneCode}",
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      padding: const EdgeInsets.all(13.0),
+                      child: InkWell(
+                        onTap: () {
+                        showCountryPicker(
+                          context: context,
+                          countryListTheme: const CountryListThemeData(
+                          bottomSheetHeight: 500,
                           ),
+                          onSelect: (value) {
+                          setState(() {
+                            selectedCountry = value;
+                          });
+                          },
+                        );
+                        },
+                        child: Text(
+                        "${selectedCountry.flagEmoji} + ${selectedCountry.phoneCode}",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                         ),
                       ),
+                      ),
                       suffixIcon: phoneController.text.length > 9
-                          ? Container(
-                        height: 30,
-                        width: 30,
-                        margin: const EdgeInsets.all(5.0),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.green,
-                        ),
-                        child: const Icon(
-                          Icons.done,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                        ? Container(
+                      height: 30,
+                      width: 30,
+                      margin: const EdgeInsets.all(5.0),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.green,
+                      ),
+                      child: const Icon(
+                        Icons.done,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                       )
-                          : null,
+                        : null,
                     ),
-                  ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                      return 'Please enter your phone number';
+                      } else if (value.length < 10) {
+                      return 'Please enter a valid phone number';
+                      }
+                      // Allow only numbers
+                      else if (!RegExp(r'^-?[0-9]+$').hasMatch(value)) {
+                        return 'Please enter a valid phone number';
+                      }
+                      
+                      return null;
+                    },
+                    ),
 
                   const Text(
                     "Password.",
@@ -160,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 20),
                   // Password field widget here
-                  TextFormField(
+                    TextFormField(
                     cursorColor: Colors.black,
                     controller: passwordController,
                     style: const TextStyle(
@@ -169,38 +185,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     onFieldSubmitted: (value) {
                       setState(() {
-                        passwordController.text = value;
+                      passwordController.text = value;
                       });
                     },
                     obscureText: _obscureText,
                     decoration: InputDecoration(
                       labelText: 'Password',
                       suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureText ? Icons.visibility : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                        _obscureText = !_obscureText;
+                        });
+                      },
                       ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                         return 'Please enter your password';
+                       return 'Please enter your password';
                        }
                        return null;
                      },
-                  ),
+                    ),
                   const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: CustomButton(
-                        text: "Login", onPressed: () => sendPhoneNumber()),
+                        text: "Login", onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            sendPhoneNumber();
+                          }
+                        }),
                   ),
                 ],
+              ),
               ),
             ),
           ),

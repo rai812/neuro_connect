@@ -55,8 +55,13 @@ class Dashboard extends StatelessWidget {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () => _deleteAllData(context),
+                  // onPressed: () => _deleteAllData(context),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.grey),
+                  ),
                   child: Text('Delete All Data'),
+                  onPressed: null,
+                  
                 ),
                 SizedBox(width: 16),
                 ElevatedButton(
@@ -88,7 +93,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     if (_selectedPatient.isNotEmpty) {
       ap.resetPassword(_selectedPatient);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password reset for $_selectedPatient')),
+        SnackBar(content: Text('Password reset successfully')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

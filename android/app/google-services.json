@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "2035463667",
-    "project_id": "healthtest-35b89",
-    "storage_bucket": "healthtest-35b89.appspot.com"
+    "project_number": "50443503891",
+    "project_id": "neuroconnect",
+    "storage_bucket": "neuroconnect.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:2035463667:android:d24799d7963133c9620e86",
+        "mobilesdk_app_id": "1:50443503891:android:784e4c46b88c72a325f2e6",
         "android_client_info": {
           "package_name": "com.example.digi_diagnos"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCQ_OV4WSC3P-o1dOV6NhWjpJ-Wmpsh-Cw"
+          "current_key": "AIzaSyBnXy8vsbYH7VLSbUlh-X2ZLQ_43ysfOhQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50443503891:android:939d966d6a74fb6d25f2e6",
+        "android_client_info": {
+          "package_name": "com.satya.neurocare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnXy8vsbYH7VLSbUlh-X2ZLQ_43ysfOhQ"
         }
       ],
       "services": {

@@ -285,7 +285,7 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
     DoctorInfoModel doctorModel = DoctorInfoModel(
       name: nameController.text.trim(),
       email: emailController.text.trim(),
-      userId: ap.uid,
+      userId: userModel.uid,
       gender: genderController.text.trim(),
       id: '',
       bio: bioController.text.trim(),

@@ -22,7 +22,7 @@ Future<void> triggerHelp(BuildContext context) async {
         description: 'Help Needed', 
         timestamp: DateTime.now(), 
         closingTimestamp: DateTime.fromMillisecondsSinceEpoch(0), 
-        status: 'Pending',
+        status: 'pending',
         );
 
       authProvider.saveHelpDataToFirebase(context: context, help: help, onSuccess: () {
@@ -161,8 +161,8 @@ class HelpCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    String patientName = authProvider.patientsInfoModel.firstWhere((patient) => patient.id == help.patientId).name;
-    String patientNumber = authProvider.patientsInfoModel.firstWhere((patient) => patient.id == help.patientId).userId;
+    String patientName = authProvider.patients.firstWhere((patient) => patient.id == help.patientId).name;
+    String patientNumber = authProvider.patients.firstWhere((patient) => patient.id == help.patientId).userId;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       // on click go to the help details screen

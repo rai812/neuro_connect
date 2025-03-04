@@ -209,11 +209,13 @@ class ClinicInfoModel {
   String name;
   String address;
   String id;
+  String phone;
 
   ClinicInfoModel({
     required this.name,
     required this.address,
     required this.id,
+    required this.phone,
      });
 
   // from map
@@ -222,6 +224,7 @@ class ClinicInfoModel {
       name: map['name'] ?? '',
       address: map['address'] ?? '',
       id: map['id'] ?? '',
+      phone: map['phone'] ?? '',
     );
   }
 
@@ -231,6 +234,7 @@ class ClinicInfoModel {
       "name": name,
       "address": address,
       "id": id,
+      "phone": phone,
     };
   }
 }

@@ -624,33 +624,33 @@ class PatientCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 4),
-                      Row(
+                        Wrap(
+                        spacing: 8.0,
+                        runSpacing: 4.0,
                         children: [
                           Text(
-                            '${patientInfoModel.gender}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
+                          '${patientInfoModel.gender}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
                           ),
-                          SizedBox(width: 8),
-                          Text(
-                            '${patientInfoModel.email}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
                           ),
-                          SizedBox(width: 8),
                           Text(
-                            '${patientInfoModel.userId}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
+                          '${patientInfoModel.email}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                          ),
+                          Text(
+                          '${patientInfoModel.userId}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
                           ),
                         ],
-                      ),
+                        ),
                     ],
                   ),
                 ),
